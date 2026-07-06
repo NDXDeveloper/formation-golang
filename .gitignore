@@ -1,0 +1,68 @@
+# =========================================================
+#  .gitignore — Formation Go (Golang)
+#  Dépôt de documentation (Markdown) + exemples de code Go.
+# =========================================================
+
+# ---- Binaires & artefacts de compilation Go ----
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/bin/
+/build/
+# Sortie de GoReleaser (module 6.4)
+/dist/
+
+# ---- Couverture, profilage, benchmarks (modules 13 & 14) ----
+*.prof
+*.pprof
+*.cover
+*.coverprofile
+coverage.out
+coverage.txt
+coverage.html
+
+# ---- Fuzzing (module 13.4) : corpus généré localement ----
+**/testdata/fuzz/
+
+# ---- Modules & workspaces Go ----
+# Décommentez cette ligne si vous vendorisez les dépendances :
+# /vendor/
+go.work
+go.work.sum
+
+# ---- Configuration locale & secrets ----
+.env
+.env.*
+!.env.example
+*.local
+
+# ---- IDE / éditeurs ----
+# JetBrains GoLand
+.idea/
+*.iml
+# VS Code — pour partager des réglages, whitelistez p.ex. : !.vscode/extensions.json
+.vscode/
+# vim / emacs
+*.swp
+*.swo
+*~
+
+# ---- Systèmes d'exploitation ----
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ---- Divers ----
+*.log
+tmp/
+
+# ---- Mémo de travail interne (non destiné à la publication) ----
+NOTES-REDACTION.md

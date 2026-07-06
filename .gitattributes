@@ -1,0 +1,36 @@
+# =========================================================
+#  .gitattributes — Formation Go (Golang)
+# =========================================================
+
+# Normalisation des fins de ligne : LF dans le dépôt (auto à l'ajout).
+* text=auto eol=lf
+
+# ---- Sources & configuration : toujours LF ----
+*.go    text eol=lf diff=golang
+*.mod   text eol=lf
+*.sum   text eol=lf
+*.md    text eol=lf
+*.sh    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.json  text eol=lf
+*.toml  text eol=lf
+Dockerfile text eol=lf
+Makefile   text eol=lf
+
+# ---- Scripts Windows : CRLF obligatoire ----
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# ---- Fichiers binaires : aucune conversion ----
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary
+*.zip   binary
+*.gz    binary
