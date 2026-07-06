@@ -1,0 +1,30 @@
+# La spec = LA SOURCE DE VÉRITÉ (approche spec-first du § 5.7).
+# Version 3.0.3 — le choix sûr avec oapi-codegen (son support 3.1 reste partiel).
+openapi: 3.0.3
+info: { title: API Items, version: 1.0.0 }
+paths:
+  /v1/items/{id}:
+    get:
+      summary: Récupérer un item
+      operationId: getItem
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Item" }
+        "404":
+          description: Introuvable
+          content:
+            application/problem+json: # les erreurs font partie du contrat (§ 5.5)
+              schema: { $ref: "#/components/schemas/Problem" }
+components:
+  schemas:
+    Item:
+      type: object
+      properties: { id: { type: string }, name: { type: string } }
+    Problem:
+      type: object
+      properties: { title: { type: string }, status: { type: integer } }

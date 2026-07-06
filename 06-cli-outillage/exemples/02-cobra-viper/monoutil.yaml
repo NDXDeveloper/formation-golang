@@ -1,0 +1,4 @@
+# Fichier de configuration d'exemple, découvert par SetConfigName("monoutil")
+# + AddConfigPath(".") — la source « fichier » de la précédence :
+#   --port explicite  >  MONOUTIL_PORT  >  ce fichier  >  défaut 8080
+port: 6000

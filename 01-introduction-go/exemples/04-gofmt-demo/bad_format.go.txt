@@ -1,0 +1,18 @@
+/* ============================================================================
+   Section 1.4 : Installation et outils
+   Description : Fichier volontairement MAL formaté (indentation en espaces,
+                 espacements fantaisistes) pour démontrer `gofmt -l` puis
+                 `gofmt -w`. Extension .txt afin qu'il ne soit ni compilé ni
+                 reformaté par mégarde — copier en .go pour rejouer la démo :
+                 cp bad_format.go.txt bad.go && gofmt -l . && gofmt -w . && cat bad.go && rm bad.go
+   Fichier source : 04-installation-outils.md
+   ============================================================================ */
+
+package main
+
+import "fmt"
+
+func main()    {
+  x:=42
+      fmt.Println( x )
+}

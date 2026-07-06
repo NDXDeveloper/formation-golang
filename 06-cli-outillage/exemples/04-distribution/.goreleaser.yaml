@@ -1,0 +1,46 @@
+# ============================================================================
+# Section 6.4 : Distribution — le .goreleaser.yaml de la section
+# Description : configuration GoReleaser v2 (en-tête « version: 2 » requis) —
+#               matrice 3 OS × 2 architectures en binaires STATIQUES
+#               (CGO_ENABLED=0), -trimpath et -s -w, version estampillée
+#               depuis le tag Git ({{ .Version }}), archives tar.gz
+#               (zip sur Windows), sommes de contrôle, changelog Git.
+# Fichier source : 04-distribution.md
+# Essayer : goreleaser check   puis   goreleaser release --snapshot --clean
+# ============================================================================
+version: 2
+project_name: monoutil
+
+before:
+  hooks: # étapes de validation en lecture seule, avant tout empaquetage
+    - go mod verify
+
+builds:
+  - id: monoutil
+    main: ./cmd/monoutil
+    binary: monoutil
+    env:
+      - CGO_ENABLED=0 # cross-compilation statique, sans compilateur C
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.commit={{ .Commit }}
+      - -X main.date={{ .CommitDate }}
+    mod_timestamp: "{{ .CommitTimestamp }}" # horodatage déterministe (reproductibilité)
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip] # archive .zip sur Windows
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: git

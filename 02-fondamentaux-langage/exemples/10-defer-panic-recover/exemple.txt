@@ -1,0 +1,1 @@
+Fichier de démonstration pour os.Open + defer f.Close() (section 2.10).
