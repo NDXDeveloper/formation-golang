@@ -1,0 +1,4 @@
+# Le réflexe du cours : exclure du contexte de build ce qui n'a rien à y faire.
+.git
+*.md
+Dockerfile*

@@ -1,0 +1,25 @@
+# ============================================================================
+# Section 9.1 : Dockerfile multi-stage, images distroless / scratch
+# Description : La variante SCRATCH — l'image ne contient RIEN, on fournit
+#               donc explicitement les certificats CA (COPY depuis le
+#               builder) et l'utilisateur non-root (USER 65532) ; les
+#               fuseaux, eux, sont incorporés AU BINAIRE (`_ "time/tzdata"`
+#               dans cmd/scratch). Résultat constaté : ~6,5 Mo.
+# Fichier source : 01-docker.md
+# ============================================================================
+
+# syntax=docker/dockerfile:1
+
+FROM golang:1.26 AS builder
+WORKDIR /src
+COPY go.mod ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/app ./cmd/scratch
+
+# --- scratch : rien — les trois points « à embarquer » du cours ---
+FROM scratch
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /out/app /app
+USER 65532:65532
+ENTRYPOINT ["/app"]

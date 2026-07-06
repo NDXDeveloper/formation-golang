@@ -1,0 +1,9 @@
+# ============================================================================
+# Section 7.3 : sqlc — le SQL comme source de vérité
+# Description : la configuration v2 de la section — engine postgresql,
+#               sortie pgx/v5, emit_interface (Querier, utile pour les mocks).
+#               db/schema.sql + db/queries.sql sont la SOURCE DE VÉRITÉ ;
+#               db/gen/ est GÉNÉRÉ par « sqlc generate » (directive
+#               //go:generate dans main.go) et versionné.
+# Fichier source : 03-sqlc-vs-orm.md
+# ============================================================================

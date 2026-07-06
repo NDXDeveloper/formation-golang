@@ -1,0 +1,55 @@
+# ============================================================================
+# Section 9.2 : Kubernetes : probes, configuration, graceful shutdown
+# Description : Le manifeste de référence qui branche tout ce que main.go
+#               expose — les trois sondes (httpGet), la configuration par
+#               l'environnement (envFrom : ConfigMap + Secret), et les
+#               ressources dont Go 1.25 tire GOMAXPROCS (limits.cpu ; la
+#               request est ignorée par le runtime). Manifeste de lecture :
+#               ce dossier se démontre sans cluster (go run .).
+# Fichier source : 02-kubernetes.md
+# ============================================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: monservice }
+  template:
+    metadata:
+      labels: { app: monservice }
+    spec:
+      terminationGracePeriodSeconds: 30   # la période de grâce : Shutdown doit rester EN DESSOUS
+      containers:
+        - name: app
+          image: monservice:latest        # l'image du § 9.1
+          ports:
+            - containerPort: 8080
+
+          # Les trois sondes du cours — liveness légère, readiness qui
+          # teste les dépendances, startup pour les démarrages lents.
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: { path: /readyz, port: 8080 }
+            periodSeconds: 5
+          startupProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            failureThreshold: 30
+            periodSeconds: 2
+
+          # La configuration par l'environnement (12-factor).
+          envFrom:
+            - configMapRef: { name: app-config }
+            - secretRef:    { name: app-secrets }
+          env:
+            - name: GOMEMLIMIT              # le pendant mémoire, réglé un peu
+              value: "450MiB"               # SOUS limits.memory (512Mi)
+
+          # Go 1.25 règle GOMAXPROCS sur limits.cpu (2) — pas sur la request.
+          resources:
+            requests: { cpu: "1",  memory: "256Mi" }
+            limits:   { cpu: "2",  memory: "512Mi" }

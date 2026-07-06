@@ -1,0 +1,30 @@
+// ============================================================================
+// Section 8.2 : gRPC — le CONTRAT d'abord
+// Description : le fichier .proto de la section (proto3) — messages avec
+//               numéros de champ, service UserService avec un RPC unaire et
+//               un RPC en STREAMING serveur. C'est la source de vérité :
+//               gen/ est produit par « buf generate » (ou protoc).
+//               NB : « buf lint » réclame des types de réponse dédiés
+//               (GetUserResponse) — voir la note de la section.
+// Fichier source : 02-grpc.md
+// ============================================================================
+
+syntax = "proto3";
+
+package users.v1;
+option go_package = "github.com/acme/app/gen/users/v1;usersv1";
+
+message GetUserRequest { int64 id = 1; }
+
+message User {
+  int64  id    = 1;
+  string name  = 2;
+  string email = 3;
+}
+
+message ListUsersRequest {}
+
+service UserService {
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc ListUsers(ListUsersRequest) returns (stream User); // streaming serveur
+}

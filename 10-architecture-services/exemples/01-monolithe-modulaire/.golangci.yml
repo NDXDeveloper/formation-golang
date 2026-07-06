@@ -1,0 +1,24 @@
+# ============================================================================
+# Section 10.1 : Monolithe modulaire vs microservices
+# Description : La règle depguard du cours (format v2 de golangci-lint) —
+#               interdire au module « catalog » de dépendre de « orders ».
+#               Essayez : ajoutez `import _ "github.com/exemple/monolithe/internal/orders"`
+#               dans catalog.go puis lancez `golangci-lint run` → la
+#               violation est détectée (ou, ici, le cycle d'import ne
+#               compile même pas : le compilateur est le premier garde-fou).
+# Fichier source : 01-monolithe-vs-microservices.md
+# ============================================================================
+
+version: "2"
+linters:
+  enable:
+    - depguard
+  settings:
+    depguard:
+      rules:
+        catalog:
+          files:
+            - "**/internal/catalog/**"
+          deny:
+            - pkg: "github.com/exemple/monolithe/internal/orders"
+              desc: "le catalogue ne doit pas dépendre des commandes"

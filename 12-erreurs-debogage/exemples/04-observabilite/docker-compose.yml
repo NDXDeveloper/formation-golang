@@ -1,0 +1,22 @@
+# ============================================================================
+# Section 12.4 : Observabilité — pile locale OPTIONNELLE (backends réels)
+# Description : Jaeger (récepteur OTLP + UI des traces) et Prometheus (scrute
+#              /metrics). L'exemple main.go tourne SANS cette pile (traces
+#              vers stdout) ; ce compose sert à voir les traces dans Jaeger
+#              et les métriques dans Prometheus pour de vrai.
+# Fichier source : 04-observabilite.md
+# ============================================================================
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    ports:
+      - "127.0.0.1:16686:16686"   # UI des traces
+      - "127.0.0.1:4318:4318"     # OTLP/HTTP (endpoint d'export)
+      - "127.0.0.1:4317:4317"     # OTLP/gRPC
+
+  prometheus:
+    image: prom/prometheus:v3.1.0
+    network_mode: host            # pour scruter 127.0.0.1:<port> sur l'hôte
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro

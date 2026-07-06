@@ -1,0 +1,8 @@
+# Config Prometheus : scrute /metrics d'un service Go écoutant sur :8912.
+# (Adaptez le port si votre service en utilise un autre.)
+global:
+  scrape_interval: 2s
+scrape_configs:
+  - job_name: 'app-go'
+    static_configs:
+      - targets: ['127.0.0.1:8912']
