@@ -1,0 +1,8 @@
+# Section 17.4 §3 (04-assistants-ide.md) : tenir secrets et code vendorisé hors
+# du contexte de l'IA (même logique que .gitignore). Garde-fou concret,
+# à rapprocher de la gestion des secrets (§16.2).
+.env*
+secrets/
+vendor/
+*.pem
+*.key

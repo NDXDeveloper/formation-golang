@@ -1,0 +1,63 @@
+# ============================================================================
+# Section 15.2 : CI/CD — GitHub Actions
+# Description : Pipeline Go type — jobs parallèles test / lint / vuln, du plus
+#              rapide au plus lent (échouer tôt). setup-go lit la version dans
+#              go.mod et active le cache par défaut ; permissions au moindre
+#              privilège. Le job release ne se déclenche que sur un tag v*.
+# Fichier source : 02-cicd.md
+# ============================================================================
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read          # moindre privilège ; élevé seulement pour publier/signer
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod   # épingle la version depuis go.mod
+          # cache: true (par défaut) — cache modules + build, clé sur go.sum
+      - run: go mod verify
+      - run: go vet ./...
+      - run: go test -race -coverprofile=cover.out ./...
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6        # requis avant l'action golangci-lint
+        with:
+          go-version-file: go.mod
+      - uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.12
+
+  vuln:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # créer la release
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0 }   # GoReleaser a besoin de l'historique des tags
+      - uses: actions/setup-go@v6
+        with: { go-version-file: go.mod }
+      - uses: goreleaser/goreleaser-action@v7
+        with: { args: release --clean }
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }

@@ -1,0 +1,39 @@
+# ============================================================================
+# Section 15.2 : CI/CD — GitLab CI
+# Description : L'équivalent GitLab, sur l'image officielle golang. Deux
+#              spécificités : relocaliser GOMODCACHE/GOCACHE dans le workspace
+#              pour que le cache survive d'un job à l'autre, et le champ
+#              coverage: qui extrait le % de « go tool cover -func » pour
+#              l'afficher sur la merge request.
+# Fichier source : 02-cicd.md
+# ============================================================================
+stages: [verify, test, security]
+
+default:
+  image: golang:1.26
+  variables:                       # déplacer les caches dans le workspace pour les persister
+    GOMODCACHE: "$CI_PROJECT_DIR/.cache/mod"
+    GOCACHE: "$CI_PROJECT_DIR/.cache/build"
+  cache:
+    key:
+      files: [go.sum]
+    paths: [.cache/]
+
+lint:
+  stage: verify
+  script:
+    - go mod verify
+    - go vet ./...
+    - go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12 run ./...
+
+test:
+  stage: test
+  script:
+    - go test -race -coverprofile=cover.out ./...
+    - go tool cover -func=cover.out
+  coverage: '/total:\s+\(statements\)\s+(\d+\.\d+)%/'   # % remonté dans l'UI de la MR
+
+govulncheck:
+  stage: security
+  script:
+    - go run golang.org/x/vuln/cmd/govulncheck@latest ./...

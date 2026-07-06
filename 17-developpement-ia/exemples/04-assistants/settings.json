@@ -1,0 +1,7 @@
+{
+  "//": "Section 17.4 §2 (04-assistants-ide.md) : réglages VS Code pour associer Copilot à l'extension Go (gopls). L'IA écrit, la chaîne Go vérifie — modernizers et linting à la sauvegarde s'affichent en direct.",
+  "go.lintTool": "golangci-lint",
+  "go.lintOnSave": "package",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": { "source.organizeImports": "explicit" }
+}

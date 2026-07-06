@@ -1,0 +1,32 @@
+# ============================================================================
+# Section 13.5 : Linters — go vet, staticcheck, golangci-lint
+# Description : La configuration golangci-lint du cours, au FORMAT v2 (le
+#              standard depuis 2025 — une config v1 est refusée avec
+#              « unsupported version of the configuration »). default:
+#              standard active govet/staticcheck/errcheck/ineffassign/unused ;
+#              on ajoute errorlint, bodyclose, misspell.
+# Fichier source : 05-linters.md
+# ============================================================================
+
+version: "2"
+
+linters:
+  default: standard        # govet, staticcheck, errcheck, ineffassign, unused…
+  enable:
+    - errorlint            # comparaison directe là où errors.Is s'impose
+    - bodyclose            # response body non fermé
+    - misspell
+  settings:
+    misspell:
+      locale: US
+  exclusions:
+    presets:
+      - common-false-positives
+    rules:
+      - path: _test\.go
+        linters: [errcheck]   # tolérer les erreurs non vérifiées dans les tests
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
